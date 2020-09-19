@@ -1,2 +1,2 @@
 # OpenGLStudy
- opengl project for myself
+opengl学习
