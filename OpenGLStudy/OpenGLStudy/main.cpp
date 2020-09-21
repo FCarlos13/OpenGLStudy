@@ -8,21 +8,7 @@
 
 #include <iostream>
 
-//Shader Source
-const GLchar *vertexShaderSource =
-"#version 330 core\n"
-"layout(location = 0) in vec3 position;\n"
-"void main()\n"
-"{\n"
-"gl_Position = vec4(position.x, position.y, position.z, 1.0);"
-"}";
-
-const GLchar *fragmentShaderSource = "#version 330 core\n"
-"out vec4 color;\n"
-"void main()\n"
-"{\n"
-"color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}";
+#include "Shader.h"
 
 const GLuint WIDTH = 800, HEIGHT = 600;
 
@@ -68,64 +54,32 @@ int main()
 
 	//创建视窗
 	glViewport(0, 0, WIDTH, HEIGHT);
-
-	//Generate Shaders
-	GLuint vertexShader, fragmentShader;
-	GLint  success;
-	GLchar infoLog[512];
-
-	//vertex shader
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-	//check if success
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-
-	//fragmentshader
-	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-	//check if success
-	if (!success)
-	{
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
-
-	//shader program
-	unsigned int shaderProgram;
-	shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-	//check if success
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINK::FAILED\n" << infoLog << std::endl;
-	}
-
-	glUseProgram(shaderProgram);
 	
-	//detach and delete shaders
-	//glDetachShader(vertexShader);
-	//glDetachShader(fragmentShader);
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
+	//creat shader program
+	Shader ourShader("Resources/Shaders/shader.vs", "Resources/Shaders/shader.frag");
+	
 	//顶点数据
+	//SINGLE TRANGLE TEST AND RECTANGLE TEST
 	float vertices[] = 
 	{
 		-0.5f, -0.5f, 0.0f,		//左下
 		 0.5f, -0.5f, 0.0f,		//右下
-		 0.5f,  0.5f, 0.0f,		//右上
-		-0.5f,  0.5f, 0.0f		//左上
+		 0.0f,  0.5f, 0.0f,		//右上
+//		-0.5f,  0.5f, 0.0f		//左上
 	};
+
+	//TWO TRANGLES TEST
+	//float vertices[] = 
+	//{
+ //       // first triangle
+	//	-0.9f, -0.5f, 0.0f,  // left 
+	//	-0.0f, -0.5f, 0.0f,  // right
+	//	-0.45f, 0.5f, 0.0f,  // top 
+	//	// second triangle
+	//	0.0f, -0.5f, 0.0f,  // left
+	//	0.9f, -0.5f, 0.0f,  // right
+	//	0.45f, 0.5f, 0.0f   // top 
+	//};
 
 	unsigned int indices[] = 
 	{			 // 注意索引从0开始! 
@@ -134,23 +88,28 @@ int main()
 	};
 
 	//VBO VAO
-	unsigned int VBO, VAO, EBO;
+	unsigned int VBO, VAO; //EBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+//	glGenBuffers(1, &EBO);
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	//应用顶点属性
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
+	//解绑VBO
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	//解绑VAO，防止误操作
 	glBindVertexArray(0);
+
+	//以线条绘制
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 	//Render loop
 	while (!glfwWindowShouldClose(window))
@@ -163,15 +122,22 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(shaderProgram);
+		ourShader.use();
+		//ourShader.setUniFloat("xOffset", 0.5f);
 		glBindVertexArray(VAO); 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+//		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		//glBindVertexArray(0);		//不需要每次都解绑
 
 		//检查并调用事件，交换缓冲
 		glfwPollEvents();
 		glfwSwapBuffers(window);
 	}
+
+	//de-allocate all resources once they've outlived their purpose:
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+//	glDeleteBuffers(1, &EBO);
 
 	glfwTerminate();
 	return 0;
