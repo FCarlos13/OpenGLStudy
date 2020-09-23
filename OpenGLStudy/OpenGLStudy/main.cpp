@@ -76,13 +76,13 @@ int main()
 
 	//顶点数据
 	//SINGLE TRANGLE TEST AND RECTANGLE TEST
-	float vertices[] = 
-	{	//position				//texture
-		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		//左下
-		 0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		//右下
-		 0.5f,  0.5f, 0.0f,		1.0f, 1.0f,		//右上
-		-0.5f,  0.5f, 0.0f,		0.0f, 1.0f		//左上
-	};
+	//float vertices[] = 
+	//{	//position				//texture
+	//	-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		//左下
+	//	 0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		//右下
+	//	 0.5f,  0.5f, 0.0f,		1.0f, 1.0f,		//右上
+	//	-0.5f,  0.5f, 0.0f,		0.0f, 1.0f		//左上
+	//};
 
 	//More 3D
 	float vertices[] = {
@@ -142,11 +142,11 @@ int main()
 	//	0.45f, 0.5f, 0.0f   // top 
 	//};
 
-	unsigned int indices[] = 
-	{			 // 注意索引从0开始! 
-		0, 1, 3, // 第一个三角形
-		1, 2, 3  // 第二个三角形
-	};
+	//unsigned int indices[] = 
+	//{			 // 注意索引从0开始! 
+	//	0, 1, 3, // 第一个三角形
+	//	1, 2, 3  // 第二个三角形
+	//};
 	
 
 
@@ -156,16 +156,16 @@ int main()
 
 
 
-	unsigned int VBO, VAO, EBO;
+	unsigned int VBO, VAO;// EBO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+//	glGenBuffers(1, &EBO);
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	//应用顶点属性
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -245,18 +245,6 @@ int main()
 	//这里的value是GL_TEXTURE0 + value 所对应的active texture
 
 
-	/*
-				GLM TRANSFORM MATRIX
-	*/
-
-	glm::mat4 model, view, projection; //		vclip = vproj * vview * vmodel *vlocal
-	model		= glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f)); 
-	view		= glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));						// 注意，我们将矩阵向我们要进行移动场景的反方向移动
-	projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-
-	int transUniChange;
-
-
 
 	/*
 				RENDER LOOP
@@ -277,20 +265,36 @@ int main()
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, texture2);
+		glBindTexture(GL_TEXTURE_2D, texture2);	
 
-		transUniChange = glGetUniformLocation(ourShader.ID, "model");
-		glUniformMatrix4fv(transUniChange, 1, GL_FALSE, glm::value_ptr(model));
-		transUniChange = glGetUniformLocation(ourShader.ID, "view");
-		glUniformMatrix4fv(transUniChange, 1, GL_FALSE, glm::value_ptr(view));
-		transUniChange = glGetUniformLocation(ourShader.ID, "projection");
-		glUniformMatrix4fv(transUniChange, 1, GL_FALSE, glm::value_ptr(projection));
+	/*
+				GLM TRANSFORM MATRIX
+	*/
+
+		glm::mat4 model, view, projection; //		vclip = vproj * vview * vmodel * vlocal
+		unsigned int transUniChange1, transUniChange2, transUniChange3;
+		// specific code are in RENDER LOOP
+		// here only gives out the definition
+
+
+
+		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));						// 注意，我们将矩阵向我们要进行移动场景的反方向移动
+		projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+
+		transUniChange1 = glGetUniformLocation(ourShader.ID, "model");
+		glUniformMatrix4fv(transUniChange1, 1, GL_FALSE, glm::value_ptr(model));
+		transUniChange2 = glGetUniformLocation(ourShader.ID, "view");
+		glUniformMatrix4fv(transUniChange2, 1, GL_FALSE, &view[0][0]);
+//		glUniformMatrix4fv(transUniChange2, 1, GL_FALSE, glm::value_ptr(view));
+		transUniChange3 = glGetUniformLocation(ourShader.ID, "projection");
+		glUniformMatrix4fv(transUniChange3, 1, GL_FALSE, glm::value_ptr(projection));
 
 		ourShader.use();
 		//ourShader.setUniFloat("xOffset", 0.5f);
 		glBindVertexArray(VAO); 
-//		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+//		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		//glBindVertexArray(0);		//不需要每次都解绑
 
 		//检查并调用事件，交换缓冲
@@ -301,7 +305,7 @@ int main()
 	//de-allocate all resources once they've outlived their purpose:
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
+//	glDeleteBuffers(1, &EBO);
 	glDeleteTextures(1, &texture1);
 	glDeleteTextures(1, &texture2);
 
