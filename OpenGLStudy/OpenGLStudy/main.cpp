@@ -30,6 +30,9 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
+//global light setting
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 //function prototype
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
@@ -92,14 +95,15 @@ int main()
 			CREAT SHADER PROJECT
 	*/
 
-	Shader ourShader("Resources/Shaders/shader.vs", "Resources/Shaders/shader.frag");
-	
+	Shader lightingShader("Resources/Shaders/shader.vs", "Resources/Shaders/shader.frag");
+	Shader lampShader("Resources/Shaders/light_cube.vs", "Resources/Shaders/light_cube.frag");
+
 	/*
 				DATA
 	*/
 
 	//More 3D
-	float vertices[] = {
+	/*float vertices[] = {
 	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -141,7 +145,7 @@ int main()
 	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	};
+	};*/
 
 	//顶点数据
 	//SINGLE TRANGLE TEST AND RECTANGLE TEST
@@ -158,7 +162,7 @@ int main()
 	//	1, 2, 3  // 第二个三角形
 	//};
 	
-	glm::vec3 cubePositions[] = 
+	/*glm::vec3 cubePositions[] = 
 	{
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
@@ -170,14 +174,58 @@ int main()
 		glm::vec3(1.5f,  2.0f, -2.5f),
 		glm::vec3(1.5f,  0.2f, -1.5f),
 		glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
+	};*/
 
+	//light test
+	float vertices[] = {
+	   -0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+	   -0.5f,  0.5f, -0.5f,
+	   -0.5f, -0.5f, -0.5f,
+
+	   -0.5f, -0.5f,  0.5f,
+		0.5f, -0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+	   -0.5f,  0.5f,  0.5f,
+	   -0.5f, -0.5f,  0.5f,
+
+	   -0.5f,  0.5f,  0.5f,
+	   -0.5f,  0.5f, -0.5f,
+	   -0.5f, -0.5f, -0.5f,
+	   -0.5f, -0.5f, -0.5f,
+	   -0.5f, -0.5f,  0.5f,
+	   -0.5f,  0.5f,  0.5f,
+
+		0.5f,  0.5f,  0.5f,
+		0.5f,  0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+
+	   -0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f,  0.5f,
+		0.5f, -0.5f,  0.5f,
+	   -0.5f, -0.5f,  0.5f,
+	   -0.5f, -0.5f, -0.5f,
+
+	   -0.5f,  0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+		0.5f,  0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+	   -0.5f,  0.5f,  0.5f,
+	   -0.5f,  0.5f, -0.5f,
+	};
 	/*
-				VBO VAO
+				VBO objectVAO
 	*/
 
-	unsigned int VBO, VAO;// EBO;
-	glGenVertexArrays(1, &VAO);
+	unsigned int VBO, objectVAO;// EBO;
+	glGenVertexArrays(1, &objectVAO);
 	glGenBuffers(1, &VBO);
 	//glGenBuffers(1, &EBO);
 
@@ -185,17 +233,25 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	glBindVertexArray(VAO);
 
-	//应用顶点属性
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glBindVertexArray(objectVAO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	/*glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);*/
+	
+	//bind lightVAO
+	unsigned int lightVAO;
+	glGenVertexArrays(1, &lightVAO);
+	glBindVertexArray(lightVAO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
 	//解绑VBO
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//解绑VAO，防止误操作
-	glBindVertexArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//解绑objectVAO，防止误操作
+	//glBindVertexArray(0);
 
 	//以线条绘制
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -206,7 +262,7 @@ int main()
 
 	//Generate texture
 
-	unsigned int texture1, texture2;
+	/*unsigned int texture1, texture2;
 	glGenTextures(1, &texture1);
 	//texture1
 	glBindTexture(GL_TEXTURE_2D, texture1);
@@ -221,7 +277,7 @@ int main()
 	unsigned char *data = stbi_load("wall.jpg", &width, &height, &nrChannels, 0);
 	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);			//自动生成所有需要的多级渐远纹理
 	}
 	else
@@ -251,12 +307,12 @@ int main()
 		std::cout << "Failed to load texture" << std::endl;
 	}
 	stbi_image_free(data);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);*/
 
 	//load fragment shader's uniform
-	ourShader.use();
-	ourShader.setUniInt("texture1", 0);
-	ourShader.setUniInt("texture2", 3); 
+	/*lightingShader.use();
+	lightingShader.setUniInt("texture1", 0);
+	lightingShader.setUniInt("texture2", 3); */
 	//Shader.setUniInt("xxxx", value);
 	//这里的value是GL_TEXTURE0 + value 所对应的active texture
 
@@ -264,7 +320,7 @@ int main()
 			Matrix variation definition
 	*/
 
-	glm::mat4 model, view, projection; //		vclip = vproj * vview * vmodel * vlocal
+	//glm::mat4 model, view, projection; //		vclip = vproj * vview * vmodel * vlocal
 
 	/*
 				RENDER LOOP
@@ -287,28 +343,39 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		// bind textures on corresponding texture units
-		glActiveTexture(GL_TEXTURE0);
+		/*glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, texture2);	
+		glBindTexture(GL_TEXTURE_2D, texture2);	*/
 
 
-		ourShader.use();
-		//ourShader.setUniFloat("xOffset", 0.5f);
+		//lightingShader.use();
+		//lampShader.use();
+		////lightingShader.setUniFloat("xOffset", 0.5f);
 
-		/*
-				projection matrix
-		*/
+		//lightingShader.setUniVec3("objectColor", 1.0f, 0.5f, 0.31f);
+		//lightingShader.setUniVec3("lightColor", 1.0f, 1.0f, 1.0f);
 
-		projection = glm::perspective(glm::radians(ourCamera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-		ourShader.setUniMat4("projection", projection);
-		/*
-				view/camera matrix
-		*/
+		///*
+		//		projection matrix
+		//*/
 
-		//move by ur keys
-		view = ourCamera.GetViewMatrix();
-		ourShader.setUniMat4("view", view);
+		//projection = glm::perspective(glm::radians(ourCamera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+		//lightingShader.setUniMat4("projection", projection);
+		//lampShader.setUniMat4("projection", projection);
+		///*
+		//		view/camera matrix
+		//*/
+
+		////move by ur keys
+		//view = ourCamera.GetViewMatrix();
+		//lightingShader.setUniMat4("view", view);
+		//lampShader.setUniMat4("view", view);
+
+		//lightingShader.setUniMat4("model", model);
+		//model = glm::translate(model, lightPos);
+		//model = glm::scale(model, glm::vec3(0.2f));
+		//lampShader.setUniMat4("model", model);
 
 		// camera/view transformation (ROTATION)
 		//float radius = 10.0f;
@@ -316,26 +383,62 @@ int main()
 		//float camZ = (float)cos(glfwGetTime()) * radius;
 		//view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-		glBindVertexArray(VAO); 
+		// be sure to activate shader when setting uniforms/drawing objects
+		lightingShader.use();
+		lightingShader.setUniVec3("objectColor", 1.0f, 0.5f, 0.31f);
+		lightingShader.setUniVec3("lightColor", 1.0f, 1.0f, 1.0f);
+
+		// view/projection transformations
+		glm::mat4 projection = glm::perspective(glm::radians(ourCamera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+		glm::mat4 view = ourCamera.GetViewMatrix();
+		lightingShader.setUniMat4("projection", projection);
+		lightingShader.setUniMat4("view", view);
+
+		// world transformation
+		glm::mat4 model = glm::mat4(1.0f);
+		lightingShader.setUniMat4("model", model);
+
+		// render the cube
+		glBindVertexArray(objectVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		// also draw the lamp object
+		lampShader.use();
+		lampShader.setUniMat4("projection", projection);
+		lampShader.setUniMat4("view", view);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+		lampShader.setUniMat4("model", model);
+
+		glBindVertexArray(lightVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+	/*
+		glBindVertexArray(objectVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(lightVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);*/
 
 	/*
 			model matrix
 	*/
 
-		for (unsigned int i = 0; i < 10; i++)
+		/*for (unsigned int i = 0; i < 10; i++)
 		{
 			glm::mat4 model;
 			model = glm::translate(model, cubePositions[i]);
 			float angle = 20.0f * i;
 			if (i % 3 == 0)  // every 3rd iteration (including the first) we set the angle using GLFW's time function.
 				angle = (float)glfwGetTime() * 25.0f;
-			model = glm::rotate(model, /*(float)glfwGetTime()*/glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-			ourShader.setUniMat4("model", model);
+			model = glm::rotate(model, /*(float)glfwGetTime()//glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			lightingShader.setUniMat4("model", model);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
-//		glDrawArrays(GL_TRIANGLES, 0, 36);
-//		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		}*/
+		//glDrawArrays(GL_TRIANGLES, 0, 36);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		//glBindVertexArray(0);		//不需要每次都解绑
 
 		//检查并调用事件，交换缓冲
@@ -344,11 +447,12 @@ int main()
 	}
 
 	//de-allocate all resources once they've outlived their purpose:
-	glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &objectVAO);
+	glDeleteVertexArrays(1, &lightVAO);
 	glDeleteBuffers(1, &VBO);
-//	glDeleteBuffers(1, &EBO);
-	glDeleteTextures(1, &texture1);
-	glDeleteTextures(1, &texture2);
+	//glDeleteBuffers(1, &EBO);
+	/*glDeleteTextures(1, &texture1);
+	glDeleteTextures(1, &texture2);*/
 
 	glfwTerminate();
 	return 0;
