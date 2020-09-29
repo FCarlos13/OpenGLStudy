@@ -364,6 +364,7 @@ int main()
 		// be sure to activate shader when setting uniforms/drawing objects
 		lightingShader.use();
 		lightingShader.setUniVec3("lightPos", lightPos);
+		lightingShader.setUniVec3("viewPos", ourCamera.Position);
 		lightingShader.setUniVec3("objectColor", 1.0f, 0.5f, 0.31f);
 		lightingShader.setUniVec3("lightColor", 1.0f, 1.0f, 1.0f);
 
