@@ -104,7 +104,8 @@ int main()
 	*/
 
 
-	float vertices[] = {
+	float vertices[] = 
+	{
 		// positions          // normals           // texture coords
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
@@ -147,6 +148,20 @@ int main()
 		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
 		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
+	};
+
+	glm::vec3 cubePositions[] = 
+	{
+		glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
 	/*
 				VBO objectVAO
@@ -224,14 +239,24 @@ int main()
 
 		// be sure to activate shader when setting uniforms/drawing objects
 
-		lightingShader.use();
-		lightingShader.setUniVec3("light.position", lightPos);
+		lightingShader.use(); 
+		//lightingShader.setUniVec3("light.direction", 0.0f, 0.0f, -1.0f);
+		//lightingShader.setUniVec3("light.position", lightPos);
 		lightingShader.setUniVec3("viewPos", ourCamera.Position);
 
 		lightingShader.setUniFloat("material.shininess", 64.0f);
 		lightingShader.setUniVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-		lightingShader.setUniVec3("light.diffuse", 0.2f, 0.2f, 0.2f); // 将光照调暗了一些以搭配场景
+		lightingShader.setUniVec3("light.diffuse", 0.5f, 0.5f, 0.5f); // 将光照调暗了一些以搭配场景
 		lightingShader.setUniVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+		lightingShader.setUniFloat("light.constant", 1.0f);
+		lightingShader.setUniFloat("light.linear", 0.045f);
+		lightingShader.setUniFloat("light.quadratic", 0.0075f);
+
+		lightingShader.setUniVec3("light.position", ourCamera.Position);
+		lightingShader.setUniVec3("light.direction", ourCamera.Front);
+		lightingShader.setUniFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+		lightingShader.setUniFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(ourCamera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
@@ -240,8 +265,8 @@ int main()
 		lightingShader.setUniMat4("view", view);
 
 		// world transformation
-		glm::mat4 model = glm::mat4(1.0f);
-		lightingShader.setUniMat4("model", model);
+		//glm::mat4 model = glm::mat4(1.0f);
+		//lightingShader.setUniMat4("model", model);
 
 		// bind textures on corresponding texture units
 		glActiveTexture(GL_TEXTURE0);
@@ -249,16 +274,26 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, specularMap);
 
-		// render the cube
-		glBindVertexArray(objectVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
+		for (unsigned int i = 0; i < 10; i++)
+		{
+			// calculate the model matrix for each object and pass it to shader before drawing
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, cubePositions[i]);
+			float angle = 20.0f * i;
+			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			lightingShader.setUniMat4("model", model);
+
+			glBindVertexArray(objectVAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
 
 
 		// also draw the lamp object
 		lampShader.use();
 		lampShader.setUniMat4("projection", projection);
 		lampShader.setUniMat4("view", view);
-		model = glm::mat4(1.0f);
+		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, lightPos);
 		model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
 		lampShader.setUniMat4("model", model);
@@ -266,31 +301,7 @@ int main()
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-	/*
-		glBindVertexArray(objectVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(lightVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36);*/
 
-	/*
-			model matrix
-	*/
-
-		/*for (unsigned int i = 0; i < 10; i++)
-		{
-			glm::mat4 model;
-			model = glm::translate(model, cubePositions[i]);
-			float angle = 20.0f * i;
-			if (i % 3 == 0)  // every 3rd iteration (including the first) we set the angle using GLFW's time function.
-				angle = (float)glfwGetTime() * 25.0f;
-			model = glm::rotate(model, /*(float)glfwGetTime()//glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-			lightingShader.setUniMat4("model", model);
-
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}*/
-		//glDrawArrays(GL_TRIANGLES, 0, 36);
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		//glBindVertexArray(0);		//不需要每次都解绑
 
 		//检查并调用事件，交换缓冲
 		glfwPollEvents();

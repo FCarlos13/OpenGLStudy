@@ -1,9 +1,9 @@
 ﻿  main.cpp
-d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(321): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(322): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(326): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(327): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
-d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(329): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(330): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
-d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(336): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
+d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(332): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(333): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(337): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(338): warning C4244: “初始化”: 从“double”转换到“float”，可能丢失数据
+d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(340): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(341): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+d:\codestd\openglstudy\openglstudy\openglstudy\openglstudy\main.cpp(347): warning C4244: “参数”: 从“double”转换到“float”，可能丢失数据
   OpenGLStudy.vcxproj -> D:\CodeStd\OpenGLStudy\OpenGLStudy\OpenGLStudy\Debug\OpenGLStudy.exe

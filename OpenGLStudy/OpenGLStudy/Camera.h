@@ -20,7 +20,7 @@ const float YAW = -90.0f;
 const float PITCH = 0.0f;
 const float SPEED = 1.5f;
 const float SENSITIVITY = 0.1f;
-const float ZOOM = 60.0f;
+const float ZOOM = 45.0f;
 
 class Camera
 {
@@ -134,8 +134,8 @@ void Camera::ProcessMouseScroll(float yoffset)
 	Zoom -= (float)yoffset;
 	if (Zoom < 1.0f)
 		Zoom = 1.0f;
-	if (Zoom > 60.0f)
-		Zoom = 60.0f;
+	if (Zoom > ZOOM)
+		Zoom = ZOOM;
 }
 
 #endif // !CAMERA_H
