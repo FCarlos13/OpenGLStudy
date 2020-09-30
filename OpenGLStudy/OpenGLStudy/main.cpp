@@ -163,6 +163,15 @@ int main()
 		glm::vec3(1.5f,  0.2f, -1.5f),
 		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
+
+	glm::vec3 pointLightPositions[] = 
+	{
+	glm::vec3(0.7f,  0.2f,  2.0f),
+	glm::vec3(2.3f, -3.3f, -4.0f),
+	glm::vec3(-4.0f,  2.0f, -12.0f),
+	glm::vec3(0.0f,  0.0f, -3.0f)
+	};
+
 	/*
 				VBO objectVAO
 	*/
@@ -243,20 +252,56 @@ int main()
 		//lightingShader.setUniVec3("light.direction", 0.0f, 0.0f, -1.0f);
 		//lightingShader.setUniVec3("light.position", lightPos);
 		lightingShader.setUniVec3("viewPos", ourCamera.Position);
-
 		lightingShader.setUniFloat("material.shininess", 64.0f);
-		lightingShader.setUniVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-		lightingShader.setUniVec3("light.diffuse", 0.5f, 0.5f, 0.5f); // 将光照调暗了一些以搭配场景
-		lightingShader.setUniVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
-		lightingShader.setUniFloat("light.constant", 1.0f);
-		lightingShader.setUniFloat("light.linear", 0.045f);
-		lightingShader.setUniFloat("light.quadratic", 0.0075f);
-
-		lightingShader.setUniVec3("light.position", ourCamera.Position);
-		lightingShader.setUniVec3("light.direction", ourCamera.Front);
-		lightingShader.setUniFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
-		lightingShader.setUniFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
+		// directional light
+		lightingShader.setUniVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
+		lightingShader.setUniVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		lightingShader.setUniVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
+		lightingShader.setUniVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
+		// point light 1
+		lightingShader.setUniVec3("pointLights[0].position", pointLightPositions[0]);
+		lightingShader.setUniVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+		lightingShader.setUniVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+		lightingShader.setUniVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+		lightingShader.setUniFloat("pointLights[0].constant", 1.0f);
+		lightingShader.setUniFloat("pointLights[0].linear", 0.09);
+		lightingShader.setUniFloat("pointLights[0].quadratic", 0.032);
+		// point light 2
+		lightingShader.setUniVec3("pointLights[1].position", pointLightPositions[1]);
+		lightingShader.setUniVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+		lightingShader.setUniVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+		lightingShader.setUniVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+		lightingShader.setUniFloat("pointLights[1].constant", 1.0f);
+		lightingShader.setUniFloat("pointLights[1].linear", 0.09);
+		lightingShader.setUniFloat("pointLights[1].quadratic", 0.032);
+		// point light 3
+		lightingShader.setUniVec3("pointLights[2].position", pointLightPositions[2]);
+		lightingShader.setUniVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+		lightingShader.setUniVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+		lightingShader.setUniVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+		lightingShader.setUniFloat("pointLights[2].constant", 1.0f);
+		lightingShader.setUniFloat("pointLights[2].linear", 0.09);
+		lightingShader.setUniFloat("pointLights[2].quadratic", 0.032);
+		// point light 4
+		lightingShader.setUniVec3("pointLights[3].position", pointLightPositions[3]);
+		lightingShader.setUniVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+		lightingShader.setUniVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+		lightingShader.setUniVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+		lightingShader.setUniFloat("pointLights[3].constant", 1.0f);
+		lightingShader.setUniFloat("pointLights[3].linear", 0.09);
+		lightingShader.setUniFloat("pointLights[3].quadratic", 0.032);
+		// spotLight
+		lightingShader.setUniVec3("spotLight.position", ourCamera.Position);
+		lightingShader.setUniVec3("spotLight.direction", ourCamera.Front);
+		lightingShader.setUniVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		lightingShader.setUniVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		lightingShader.setUniVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		lightingShader.setUniFloat("spotLight.constant", 1.0f);
+		lightingShader.setUniFloat("spotLight.linear", 0.09);
+		lightingShader.setUniFloat("spotLight.quadratic", 0.032);
+		lightingShader.setUniFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		lightingShader.setUniFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(ourCamera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
