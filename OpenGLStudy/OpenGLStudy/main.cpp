@@ -111,7 +111,7 @@ int main()
 
 	// load models
 	// -----------
-	Model ourModel("..\\External Sources\\models\\nanosuit\\nanosuit.obj");
+	Model ourModel("../External Sources/models/47-obj/obj/Handgun_obj.obj");
 
 
 	// draw in wireframe
@@ -147,7 +147,7 @@ int main()
 
 		// render the loaded model
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+		model = glm::translate(model, glm::vec3(0.0f, -10.0f, -10.0f)); // translate it down so it's at the center of the scene
 		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
 		ourShader.setUniMat4("model", model);
 		ourModel.Draw(ourShader);
