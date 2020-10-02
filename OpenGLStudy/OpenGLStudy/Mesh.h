@@ -18,11 +18,14 @@ struct Vertex
 	glm::vec3 Position;
 	glm::vec3 Normal;
 	glm::vec2 TexCoords;
+	glm::vec3 Tangent;
+	glm::vec3 Bitangent;
 }; 
 struct Texture 
 {
 	unsigned int id;
 	string type;
+	string path;
 };
 
 class Mesh 
@@ -31,7 +34,8 @@ public:
 	/*  网格数据  */
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
-	vector<Texture> textures;
+	vector<Texture> textures; 
+	unsigned int VAO;
 
 	/*  函数  */
 	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
@@ -40,7 +44,7 @@ public:
 
 private:
 	/*  渲染数据  */
-	unsigned int VAO, VBO, EBO;
+	unsigned int VBO, EBO;
 
 	/*  函数  */
 	void setupMesh();
@@ -59,6 +63,8 @@ void Mesh::Draw(Shader & shader)
 {
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
+	unsigned int normalNr = 1;
+	unsigned int heightNr = 1;
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i); // 在绑定之前激活相应的纹理单元
@@ -69,6 +75,11 @@ void Mesh::Draw(Shader & shader)
 			number = std::to_string(diffuseNr++);
 		else if (name == "texture_specular")
 			number = std::to_string(specularNr++);
+		else if (name == "texture_normal")
+			number = std::to_string(normalNr++);
+		else if (name == "texture_height")
+			number = std::to_string(heightNr++); 
+
 
 		shader.setUniInt(("material." + name + number).c_str(), i);
 		glBindTexture(GL_TEXTURE_2D, textures[i].id);
@@ -104,6 +115,12 @@ void Mesh::setupMesh()
 	// 顶点纹理坐标
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+	//vertex tangent
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+	// vertex bitangent
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
 
 	glBindVertexArray(0);
 }
