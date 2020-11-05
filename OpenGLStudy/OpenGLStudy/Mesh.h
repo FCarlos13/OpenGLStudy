@@ -1,12 +1,6 @@
-#ifndef MESH_H
-#define MESH_H
+#pragma once
 
-#include <glad/glad.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#include "Shader.h"
+#include"glheader.h"
 
 #include <string>
 #include <vector>
@@ -125,6 +119,3 @@ void Mesh::setupMesh()
 	glBindVertexArray(0);
 }
 
-
-
-#endif // !MESH_H

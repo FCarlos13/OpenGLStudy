@@ -131,6 +131,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="glheader.h" />
+    <ClInclude Include="helloComposition.h" />
+    <ClInclude Include="helloModels.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
@@ -138,7 +141,12 @@
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Shaders\1.model_loading.fs" />
+    <None Include="Resources\Shaders\1.model_loading.vs" />
     <None Include="Resources\Shaders\light_cube.frag" />
+    <None Include="Resources\Shaders\light_cube.vs" />
+    <None Include="Resources\Shaders\shader.frag" />
+    <None Include="Resources\Shaders\shader.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

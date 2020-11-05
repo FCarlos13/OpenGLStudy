@@ -1,9 +1,5 @@
-#ifndef CAMERA_H
-#define CAMERA_H
-
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#pragma once
+#include"glheader.h"
 
 #include <vector>
 
@@ -137,6 +133,3 @@ void Camera::ProcessMouseScroll(float yoffset)
 	if (Zoom > ZOOM)
 		Zoom = ZOOM;
 }
-
-#endif // !CAMERA_H
-

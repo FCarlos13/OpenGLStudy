@@ -1,8 +1,4 @@
-#include "Shader.h"
-#include "Camera.h"
-
-#include <glm/glm.hpp>
-#include <iostream>
+#include"glheader.h"
 
 class Light
 {

@@ -1,48 +1,88 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="exe">
+      <UniqueIdentifier>{c6314c07-7b04-4070-9eb8-c2cc0d3e5d2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="1.Shader">
+      <UniqueIdentifier>{d64103ac-653a-410c-a909-a9d7ed62e4fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glslShaders">
+      <UniqueIdentifier>{b5f5af26-cccb-4907-89b2-cbd27727fda4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="2.Light">
+      <UniqueIdentifier>{98f4ebe6-5a20-47ea-93ac-682d3ee68ab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3.Camera">
+      <UniqueIdentifier>{94c2df7c-328c-453f-af6d-4652f6724681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="4.Mesh">
+      <UniqueIdentifier>{262d196a-0bb9-48a3-85e7-0ab0dc7721e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="5.Models">
+      <UniqueIdentifier>{9c4cc7f3-7525-4e92-889b-bec7b83a0d91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="helloComposition">
+      <UniqueIdentifier>{6d2fcd32-4629-4752-9b03-2191dc0daf04}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
+      <Filter>exe</Filter>
     </ClCompile>
     <ClCompile Include="glad.c">
-      <Filter>源文件</Filter>
+      <Filter>资源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Light.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="glheader.h" />
+    <ClInclude Include="helloModels.h">
+      <Filter>5.Models</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>头文件</Filter>
+      <Filter>5.Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>3.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>1.Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>2.Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>4.Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="helloComposition.h">
+      <Filter>helloComposition</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Shaders\light_cube.frag" />
+    <None Include="Resources\Shaders\1.model_loading.fs">
+      <Filter>glslShaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\1.model_loading.vs">
+      <Filter>glslShaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\light_cube.frag">
+      <Filter>glslShaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\light_cube.vs">
+      <Filter>glslShaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\shader.frag">
+      <Filter>glslShaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\shader.vs">
+      <Filter>glslShaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

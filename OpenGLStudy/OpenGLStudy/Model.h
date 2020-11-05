@@ -2,15 +2,11 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#include <glad/glad.h>
-
-#include "Shader.h"
+#include"glheader.h"
 #include "Mesh.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -90,10 +86,10 @@ void Model::processNode(aiNode *node, const aiScene *scene)
 	 vector<unsigned int> indices;
 	 vector<Texture> textures;
 
+	 // 处理顶点位置、法线和纹理坐标
 	 for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	 {
 		 Vertex vertex;
-		 // 处理顶点位置、法线和纹理坐标
 		 glm::vec3 vector;
 		 vector.x = mesh->mVertices[i].x;
 		 vector.y = mesh->mVertices[i].y;

@@ -1,15 +1,9 @@
-#ifndef SHADER_H
-#define	SHADER_H
-
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#pragma once
+#include"glheader.h"
 
 #include <string>
 #include <fstream>
 #include <sstream>
-#include <iostream>
 
 class Shader
 {
@@ -149,4 +143,3 @@ void Shader::setUniVec3(const std::string &name, float x, float y, float z) cons
 {
 	glUniform3f(glGetUniformLocation(ID, name.c_str()), x, y, z);
 }
-#endif // !SHADER_H
